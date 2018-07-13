@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
 PROG=$(basename $0)
+PROG_DIR=$(dirname $0)
 
 function usage {
     cat <<EOF 1>&2
@@ -64,7 +65,7 @@ if [[ "$depdir" ]]; then
     docker_args+="-v $(abspath "$depdir"):/dependencies:ro "
 fi
 
-docker_args+="-v $(abspath "$srcdir"):/source-ro:ro -v $(abspath "$outdir"):/output -v $(pwd)/build-helper.sh:/build-helper.sh:ro "
+docker_args+="-v $(abspath "$srcdir"):/source-ro:ro -v $(abspath "$outdir"):/output -v $(cd $PROG_DIR; pwd)/build-helper.sh:/build-helper.sh:ro "
 
 # Pass current UID and GID to container, so that it can change the
 # ownership of output files which are otherwise writen to outdir as
