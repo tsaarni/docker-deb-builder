@@ -24,5 +24,5 @@ debuild -b -uc -us
 
 # Copy packages to output dir with user's permissions
 chown -R $USER:$GROUP /build
-cp -a /build/*.deb /output/
+cp -a /build/*.deb /build/*.buildinfo /build/*.changes /output/
 ls -l /output
