@@ -76,6 +76,9 @@ docker_args+="-e USER=$(id -u) -e GROUP=$(id -g) "
 # for debugging
 docker_args+="--rm "
 
+# disable any selinux stuff while using rh and derivates with podman
+[[  "$( docker --version )" =~ "podman" ]] && docker_args+="--security-opt label=disable "
+
 cmd="docker run -it $docker_args $image /build-helper.sh"
 
 echo "Running docker:"
