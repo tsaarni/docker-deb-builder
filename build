@@ -41,6 +41,12 @@ function abspath {
     cd "$1" && pwd
 }
 
+function sanitize_string {
+    local str=${1//_/}
+    str=${str// /_}
+    echo "${str//[^a-zA-Z0-9_]/-}"
+}
+
 
 ###########################################################################
 
@@ -134,6 +140,11 @@ fi
 cache_dir="$cache_dir/docker-deb-builder"
 
 log "Using cache directory '$cache_dir'."
+
+# share apt package cache
+apt_cache_dir="$cache_dir/$(sanitize_string "$image")/apt"
+mkdir -p "$apt_cache_dir"
+docker_args+="-v $(abspath "$apt_cache_dir"):/var/cache/apt/archives "
 
 # pass whether to use ccache
 if [[ "$use_ccache" ]]; then

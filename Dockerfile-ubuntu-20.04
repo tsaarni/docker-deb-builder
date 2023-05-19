@@ -16,4 +16,5 @@ RUN set -ex \
     && apt-mark minimize-manual -y \
     && apt-get autopurge -y \
     && apt-get clean
+RUN rm /etc/apt/apt.conf.d/docker-clean
 RUN rm -rf /tmp/* /var/tmp/*

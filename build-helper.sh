@@ -20,11 +20,17 @@ function log {
     echo -e "[${Blue}*${Reset}] $1"
 }
 
+# Remove directory owned by _apt
+trap "rm -rf /var/cache/apt/archives/partial" EXIT
+
 log "Updating image"
 apt-get update
 apt-get upgrade -y --no-install-recommends
 apt-mark minimize-manual -y
 apt-get autoremove -y
+
+log "Cleaning apt package cache"
+apt-get autoclean
 
 # Install extra dependencies that were provided for the build (if any)
 #   Note: dpkg can fail due to dependencies, ignore errors, and use
