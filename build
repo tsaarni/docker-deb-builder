@@ -72,6 +72,14 @@ shift
 extra_args=("$@")
 [[ $# -ne 0 ]] && fatal "invalid trailing command line argument(s): ${extra_args[*]}"
 
+if command -v podman >/dev/null 2>&1; then
+    tool=podman
+elif command -v docker >/dev/null 2>&1; then
+    tool=docker
+else
+    fatal "neither podman nor docker found"
+fi
+
 docker_args="-it "
 
 # Check that mandatory parameters are valid
@@ -94,7 +102,7 @@ docker_args+="-v $(cd "$PROG_DIR"; pwd)/build-helper.sh:/build-helper.sh:ro "
 # Pass current UID and GID to container, so that it can change the
 # ownership of output files which are otherwise written to outdir as
 # root
-docker_args+="-e USER=$(id -u) -e GROUP=$(id -g) "
+[[ ! "$( $tool --version )" =~ "podman" ]] && docker_args+="-e USER=$(id -u) -e GROUP=$(id -g) "
 
 # Comment following out if you want to keep container after execution
 # for debugging
@@ -104,11 +112,11 @@ docker_args+="--rm "
 docker_args+="--env DEB_BUILD_PROFILES=$profiles --env DEB_BUILD_OPTIONS=$profiles "
 
 # disable any selinux stuff while using rh and derivates with podman
-[[  "$( docker --version )" =~ "podman" ]] && docker_args+="--security-opt label=disable "
+[[ "$( $tool --version )" =~ "podman" ]] && docker_args+="--security-opt label=disable "
 
-cmd="docker run $docker_args $image /build-helper.sh"
+cmd="$tool run $docker_args $image /build-helper.sh"
 
-log "Running docker:"
+log "Running $tool:"
 log "$cmd"
 
 exec $cmd

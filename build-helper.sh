@@ -50,7 +50,9 @@ log "Building package"
 debuild -b -uc -us --sanitize-env
 
 # Copy packages to output dir with user's permissions
-chown -R "$USER:$GROUP" /build
+if [ -n "${USER+x}" ] && [ -n "${GROUP+x}" ]; then
+    chown -R "${USER}:${GROUP}" /build
+fi
 cp -a /build/*.deb /build/*.buildinfo /build/*.changes /output/
 ls -l -A --color=auto -h /output
 
