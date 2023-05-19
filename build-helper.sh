@@ -20,6 +20,12 @@ function log {
     echo -e "[${Blue}*${Reset}] $1"
 }
 
+log "Updating image"
+apt-get update
+apt-get upgrade -y --no-install-recommends
+apt-mark minimize-manual -y
+apt-get autoremove -y
+
 # Install extra dependencies that were provided for the build (if any)
 #   Note: dpkg can fail due to dependencies, ignore errors, and use
 #   apt-get to install those afterwards
