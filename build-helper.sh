@@ -47,7 +47,7 @@ mk-build-deps -ir -t "apt-get -o Debug::pkgProblemResolver=yes -y --no-install-r
 
 # Build packages
 log "Building package"
-debuild -b -uc -us
+debuild -b -uc -us --sanitize-env
 
 # Copy packages to output dir with user's permissions
 chown -R "$USER:$GROUP" /build
