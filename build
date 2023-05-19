@@ -25,6 +25,7 @@ Options:
   -o DIR       Destination directory to store packages to.
   -d DIR       Directory that contains other deb packages that need to be installed before build.
   -p profiles  Specify the profiles to build (e.g. nocheck). Takes a comma separated list.
+  -C           Use ccache to cache compiled objects.
   -L           Run Lintian after a successful build.
 EOF
     exit 1
@@ -44,7 +45,7 @@ function abspath {
 
 [[ $# -eq 0 ]] && usage
 
-while getopts "i:o:p:d:hL" opt; do
+while getopts "i:o:p:d:hCL" opt; do
     case $opt in
         i)
             image="$OPTARG"
@@ -57,6 +58,9 @@ while getopts "i:o:p:d:hL" opt; do
             ;;
         d)
             depdir="$OPTARG"
+            ;;
+        C)
+            use_ccache=1
             ;;
         L)
             run_lintian=1
@@ -114,6 +118,25 @@ docker_args+="--rm "
 
 # pass build profiles to use
 docker_args+="--env DEB_BUILD_PROFILES=$profiles --env DEB_BUILD_OPTIONS=$profiles "
+
+# Compute a private cache directory
+if [ -n "${XDG_CACHE_HOME+x}" ]; then
+    cache_dir=$XDG_CACHE_HOME
+elif [ -n "${HOME+x}" ]; then
+    cache_dir=$HOME/.cache
+else
+    cache_dir=$(eval echo "~$(id -un)")/.cache
+fi
+cache_dir="$cache_dir/docker-deb-builder"
+
+log "Using cache directory '$cache_dir'."
+
+# pass whether to use ccache
+if [[ "$use_ccache" ]]; then
+    ccache_dir="$cache_dir/ccache"
+    mkdir -p "$ccache_dir"
+    docker_args+="--env USE_CCACHE=1 -v $(abspath "$ccache_dir"):/ccache_dir "
+fi
 
 # pass whether to run Lintian
 if [[ "$run_lintian" ]]; then

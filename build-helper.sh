@@ -35,6 +35,13 @@ if [ -d /dependencies ]; then
     apt-get -f install -y --no-install-recommends
 fi
 
+# Install ccache
+if [ -n "${USE_CCACHE+x}" ]; then
+    log "Setting up ccache"
+    apt-get install -y --no-install-recommends ccache
+    export CCACHE_DIR=/ccache_dir
+fi
+
 # Make read-write copy of source code
 log "Copying source directory"
 mkdir -p /build
@@ -47,7 +54,12 @@ mk-build-deps -ir -t "apt-get -o Debug::pkgProblemResolver=yes -y --no-install-r
 
 # Build packages
 log "Building package"
-debuild -b -uc -us --sanitize-env
+debuild --prepend-path /usr/lib/ccache --preserve-envvar CCACHE_DIR -b -uc -us --sanitize-env
+
+if [ -n "${USE_CCACHE+x}" ]; then
+    log "ccache statistics"
+    ccache --show-stats
+fi
 
 cd /
 
