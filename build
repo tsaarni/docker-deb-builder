@@ -56,7 +56,7 @@ docker_args="-it "
 [[ !    "$outdir"        ]] && fatal "output directory was not given (-o DIR)"
 [[ ! -d "$outdir"        ]] && fatal "output directory does not exist: $outdir"
 [[ !    "$srcdir"        ]] && fatal "source directory not given"
-[[ ! -r "$srcdir/debian" ]] && fatal "source direcotry does not contain debian sub directory"
+[[ ! -r "$srcdir/debian" ]] && fatal "source directory does not contain debian sub directory"
 [[ !    "$image"         ]] && fatal "docker image name not given (-i IMAGE)"
 
 # Check that optional parameters are valid
@@ -68,7 +68,7 @@ fi
 docker_args+="-v $(abspath "$srcdir"):/source-ro:ro -v $(abspath "$outdir"):/output -v $(cd $PROG_DIR; pwd)/build-helper.sh:/build-helper.sh:ro "
 
 # Pass current UID and GID to container, so that it can change the
-# ownership of output files which are otherwise writen to outdir as
+# ownership of output files which are otherwise written to outdir as
 # root
 docker_args+="-e USER=$(id -u) -e GROUP=$(id -g) "
 

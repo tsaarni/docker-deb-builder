@@ -3,7 +3,7 @@
 # This script is executed within the container as root.  It assumes
 # that source code with debian packaging files can be found at
 # /source-ro and that resulting packages are written to /output after
-# succesful build.  These directories are mounted as docker volumes to
+# successful build.  These directories are mounted as docker volumes to
 # allow files to be exchanged between the host and the container.
 
 # Install extra dependencies that were provided for the build (if any)
