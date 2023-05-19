@@ -49,6 +49,18 @@ mk-build-deps -ir -t "apt-get -o Debug::pkgProblemResolver=yes -y --no-install-r
 log "Building package"
 debuild -b -uc -us --sanitize-env
 
+cd /
+
+# Run Lintian
+if [ -n "${RUN_LINTIAN+x}" ]; then
+    log "Running Lintian"
+    apt-get install -y --no-install-recommends lintian
+    adduser --system --no-create-home lintian-runner
+    log "+++ Lintian Report Start +++"
+    runuser -u lintian-runner -- lintian --display-experimental --info --display-info --pedantic --tag-display-limit 0 --color auto --verbose --fail-on none /build/*.changes
+    log "+++ Lintian Report End +++"
+fi
+
 # Copy packages to output dir with user's permissions
 if [ -n "${USER+x}" ] && [ -n "${GROUP+x}" ]; then
     chown -R "${USER}:${GROUP}" /build

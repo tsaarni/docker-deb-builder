@@ -25,6 +25,7 @@ Options:
   -o DIR       Destination directory to store packages to.
   -d DIR       Directory that contains other deb packages that need to be installed before build.
   -p profiles  Specify the profiles to build (e.g. nocheck). Takes a comma separated list.
+  -L           Run Lintian after a successful build.
 EOF
     exit 1
 }
@@ -43,7 +44,7 @@ function abspath {
 
 [[ $# -eq 0 ]] && usage
 
-while getopts "i:o:p:d:h" opt; do
+while getopts "i:o:p:d:hL" opt; do
     case $opt in
         i)
             image="$OPTARG"
@@ -56,6 +57,9 @@ while getopts "i:o:p:d:h" opt; do
             ;;
         d)
             depdir="$OPTARG"
+            ;;
+        L)
+            run_lintian=1
             ;;
         h)
             usage
@@ -110,6 +114,11 @@ docker_args+="--rm "
 
 # pass build profiles to use
 docker_args+="--env DEB_BUILD_PROFILES=$profiles --env DEB_BUILD_OPTIONS=$profiles "
+
+# pass whether to run Lintian
+if [[ "$run_lintian" ]]; then
+    docker_args+="--env RUN_LINTIAN=1 "
+fi
 
 # disable any selinux stuff while using rh and derivates with podman
 [[ "$( $tool --version )" =~ "podman" ]] && docker_args+="--security-opt label=disable "
