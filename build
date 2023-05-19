@@ -2,8 +2,9 @@
 
 set -eo pipefail
 
-PROG=$(basename $0)
-PROG_DIR=$(dirname $0)
+PROG=$(basename "$0")
+PROG_DIR=$(dirname "$0")
+
 
 function usage {
     cat <<EOF 1>&2
@@ -22,7 +23,7 @@ function fatal {
 }
 
 function abspath {
-    echo $(cd "$1" && pwd)
+    cd "$1" && pwd
 }
 
 
@@ -50,7 +51,7 @@ while getopts "i:o:d:h" opt; do
     esac
 done
 
-shift $(($OPTIND - 1))
+shift $((OPTIND - 1))
 srcdir=$1
 docker_args="-it "
 
@@ -67,7 +68,9 @@ if [[ "$depdir" ]]; then
     docker_args+="-v $(abspath "$depdir"):/dependencies:ro "
 fi
 
-docker_args+="-v $(abspath "$srcdir"):/source-ro:ro -v $(abspath "$outdir"):/output -v $(cd $PROG_DIR; pwd)/build-helper.sh:/build-helper.sh:ro "
+docker_args+="-v $(abspath "$srcdir"):/source-ro:ro "
+docker_args+="-v $(abspath "$outdir"):/output "
+docker_args+="-v $(cd "$PROG_DIR"; pwd)/build-helper.sh:/build-helper.sh:ro "
 
 # Pass current UID and GID to container, so that it can change the
 # ownership of output files which are otherwise written to outdir as
