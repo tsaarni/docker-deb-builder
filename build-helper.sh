@@ -8,6 +8,18 @@ set -euo pipefail
 # successful build.  These directories are mounted as docker volumes to
 # allow files to be exchanged between the host and the container.
 
+if [ -t 0 ] && [ -t 1 ]; then
+    Blue='\033[0;34m'
+    Reset='\033[0m'
+else
+    Blue=
+    Reset=
+fi
+
+function log {
+    echo -e "[${Blue}*${Reset}] $1"
+}
+
 # Install extra dependencies that were provided for the build (if any)
 #   Note: dpkg can fail due to dependencies, ignore errors, and use
 #   apt-get to install those afterwards
