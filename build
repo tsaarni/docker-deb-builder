@@ -106,7 +106,7 @@ docker_args+="--env DEB_BUILD_PROFILES=$profiles --env DEB_BUILD_OPTIONS=$profil
 # disable any selinux stuff while using rh and derivates with podman
 [[  "$( docker --version )" =~ "podman" ]] && docker_args+="--security-opt label=disable "
 
-cmd="docker run -it $docker_args $image /build-helper.sh"
+cmd="docker run $docker_args $image /build-helper.sh"
 
 log "Running docker:"
 log "$cmd"
