@@ -21,9 +21,10 @@ function usage {
     cat <<EOF 1>&2
 usage: $PROG [options...] SOURCEDIR
 Options:
-  -i IMAGE  Name of the docker image (including tag) to use as package build environment.
-  -o DIR    Destination directory to store packages to.
-  -d DIR    Directory that contains other deb packages that need to be installed before build.
+  -i IMAGE     Name of the docker image (including tag) to use as package build environment.
+  -o DIR       Destination directory to store packages to.
+  -d DIR       Directory that contains other deb packages that need to be installed before build.
+  -p profiles  Specify the profiles to build (e.g. nocheck). Takes a comma separated list.
 EOF
     exit 1
 }
@@ -42,13 +43,16 @@ function abspath {
 
 [[ $# -eq 0 ]] && usage
 
-while getopts "i:o:d:h" opt; do
+while getopts "i:o:p:d:h" opt; do
     case $opt in
         i)
             image="$OPTARG"
             ;;
         o)
             outdir="$OPTARG"
+            ;;
+        p)
+            profiles="$OPTARG"
             ;;
         d)
             depdir="$OPTARG"
@@ -95,6 +99,9 @@ docker_args+="-e USER=$(id -u) -e GROUP=$(id -g) "
 # Comment following out if you want to keep container after execution
 # for debugging
 docker_args+="--rm "
+
+# pass build profiles to use
+docker_args+="--env DEB_BUILD_PROFILES=$profiles --env DEB_BUILD_OPTIONS=$profiles "
 
 # disable any selinux stuff while using rh and derivates with podman
 [[  "$( docker --version )" =~ "podman" ]] && docker_args+="--security-opt label=disable "
