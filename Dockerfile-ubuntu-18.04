@@ -3,6 +3,7 @@ FROM ubuntu:18.04
 RUN sed -i -- 's/# deb-src/deb-src/g' /etc/apt/sources.list
 RUN set -ex \
     && apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
     && apt-get install -y --no-install-recommends \
                build-essential \
                cdbs \

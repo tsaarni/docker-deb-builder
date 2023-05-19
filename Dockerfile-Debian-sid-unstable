@@ -3,11 +3,14 @@ FROM debian:sid
 RUN sed -i -- 's/Types: deb/Types: deb deb-src/g' /etc/apt/sources.list.d/debian.sources
 RUN set -ex \
     && apt-get update \
+    && apt-get upgrade -y --no-install-recommends \
     && apt-get install -y --no-install-recommends \
     build-essential \
     cdbs \
     devscripts \
     equivs \
     fakeroot \
+    && apt-mark minimize-manual -y \
+    && apt-get autopurge -y \
     && apt-get clean
 RUN rm -rf /tmp/* /var/tmp/*
