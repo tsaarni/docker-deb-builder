@@ -1,6 +1,7 @@
 FROM debian:sid
 
 RUN sed -i -- 's/Types: deb/Types: deb deb-src/g' /etc/apt/sources.list.d/debian.sources
+RUN echo 'man-db man-db/auto-update boolean false' | debconf-set-selections
 RUN set -ex \
     && apt-get update \
     && apt-get upgrade -y --no-install-recommends \

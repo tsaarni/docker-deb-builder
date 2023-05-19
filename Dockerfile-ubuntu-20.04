@@ -3,6 +3,7 @@ FROM ubuntu:20.04
 ARG DEBIAN_FRONTEND=noninteractive
 
 RUN sed -i -- 's/# deb-src/deb-src/g' /etc/apt/sources.list
+RUN echo 'man-db man-db/auto-update boolean false' | debconf-set-selections
 RUN set -ex \
     && apt-get update \
     && apt-get upgrade -y --no-install-recommends \
