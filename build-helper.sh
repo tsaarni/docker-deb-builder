@@ -1,4 +1,6 @@
-#!/bin/bash -e
+#!/bin/bash
+
+set -euo pipefail
 
 # This script is executed within the container as root.  It assumes
 # that source code with debian packaging files can be found at
