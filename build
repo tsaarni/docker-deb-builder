@@ -116,6 +116,7 @@ fi
 docker_args+="-v $(abspath "$srcdir"):/source-ro:ro "
 docker_args+="-v $(abspath "$outdir"):/output "
 docker_args+="-v $(cd "$PROG_DIR"; pwd)/build-helper.sh:/build-helper.sh:ro "
+docker_args+="--mount type=tmpfs,tmpfs-size=4G,destination=/tmp "
 
 # Pass current UID and GID to container, so that it can change the
 # ownership of output files which are otherwise written to outdir as

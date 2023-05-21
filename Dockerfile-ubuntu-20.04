@@ -17,4 +17,5 @@ RUN set -ex \
     && apt-get autopurge -y \
     && apt-get clean
 RUN rm /etc/apt/apt.conf.d/docker-clean
-RUN rm -rf /tmp/* /var/tmp/*
+RUN rm -rf /tmp/* /var/tmp/
+RUN ln -s /tmp /var/tmp
