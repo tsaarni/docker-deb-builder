@@ -1,4 +1,6 @@
-#!/bin/bash -e
+#!/bin/bash
+
+set -eo pipefail
 
 PROG=$(basename $0)
 PROG_DIR=$(dirname $0)
