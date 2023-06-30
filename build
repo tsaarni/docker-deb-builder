@@ -64,6 +64,10 @@ done
 
 shift $((OPTIND - 1))
 srcdir=$1
+shift
+extra_args=("$@")
+[[ $# -ne 0 ]] && fatal "invalid trailing command line argument(s): ${extra_args[*]}"
+
 docker_args="-it "
 
 # Check that mandatory parameters are valid
