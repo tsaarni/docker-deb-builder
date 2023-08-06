@@ -56,6 +56,11 @@ mk-build-deps -ir -t "apt-get -o Debug::pkgProblemResolver=yes -y --no-install-r
 log "Building package"
 debuild --prepend-path /usr/lib/ccache --preserve-envvar CCACHE_DIR -b -uc -us --sanitize-env
 
+if [ -n "${BUILD_TWICE+x}" ]; then
+    log "Building package the second time"
+    debuild --prepend-path /usr/lib/ccache --preserve-envvar CCACHE_DIR -b -uc -us --sanitize-env
+fi
+
 if [ -n "${USE_CCACHE+x}" ]; then
     log "ccache statistics"
     ccache --show-stats

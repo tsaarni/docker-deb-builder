@@ -27,6 +27,7 @@ Options:
   -p profiles  Specify the profiles to build (e.g. nocheck). Takes a comma separated list.
   -C           Use ccache to cache compiled objects.
   -L           Run Lintian after a successful build.
+  -T           Build package twice.
 EOF
     exit 1
 }
@@ -45,7 +46,7 @@ function abspath {
 
 [[ $# -eq 0 ]] && usage
 
-while getopts "i:o:p:d:hCL" opt; do
+while getopts "i:o:p:d:hCLT" opt; do
     case $opt in
         i)
             image="$OPTARG"
@@ -58,6 +59,9 @@ while getopts "i:o:p:d:hCL" opt; do
             ;;
         d)
             depdir="$OPTARG"
+            ;;
+        T)
+            build_twice=1
             ;;
         C)
             use_ccache=1
@@ -141,6 +145,11 @@ fi
 # pass whether to run Lintian
 if [[ "$run_lintian" ]]; then
     docker_args+="--env RUN_LINTIAN=1 "
+fi
+
+# pass whether to build twice
+if [[ "$build_twice" ]]; then
+    docker_args+="--env BUILD_TWICE=1 "
 fi
 
 # disable any selinux stuff while using rh and derivates with podman
