@@ -1,4 +1,3 @@
-
 # Creating Debian packages in Docker container
 
 ## Overview
@@ -6,6 +5,9 @@
 Docker can be used to set up a clean build environment for Debian
 packaging.  This tutorial shows how to create a container with
 required build tools and how to use it to build packages.
+
+For more complete solution with many improvements see
+[container-deb-builder](https://github.com/cgzones/container-deb-builder/).
 
 ## Create build environment
 
