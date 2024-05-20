@@ -9,6 +9,8 @@ required build tools and how to use it to build packages.
 For more complete solution with many improvements see
 [container-deb-builder](https://github.com/cgzones/container-deb-builder/).
 
+You might also be interested in [debcraft](https://salsa.debian.org/otto/debcraft), which offers an easy, fast, and secure way to build Debian packages.
+
 ## Create build environment
 
 Start by building a container that will act as package build environment:
